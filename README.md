@@ -47,18 +47,6 @@ InsufficientStockException: Out of stock: Wheat (10kg)
 
 A `receipt_<timestamp>.txt` file also gets created in the project folder for whichever order went through. Since both orders start as separate threads, which one actually succeeds can change run to run — that's kind of the point, it's testing that the synchronization holds up regardless of order.
 
-## A couple of design choices I made
-
-- **Why synchronized:** without it, both threads could read the stock count before either one updates it, and you'd end up allowing both orders even though there isn't enough stock. Wrapping the check-and-deduct in `synchronized(prod)` fixes that.
-- **Why a checked exception:** I wanted the out-of-stock case to be something the caller is forced to deal with, not something that can be silently ignored, so `InsufficientStockException extends Exception` rather than `RuntimeException`.
-- **Why ArrayList over an array:** mainly just so the catalog can grow without me having to manage resizing manually.
-
-## Things I'd add if I kept working on this
-
-- Actual persistence — right now everything resets when the program stops, connecting it to MySQL via JDBC is the obvious next step
-- Swap the raw `Thread` usage for an `ExecutorService` / thread pool, more realistic for handling lots of orders
-- Some actual unit tests instead of just eyeballing the console output
-- A basic REST layer so this could sit behind a real frontend
 
 ## Docs
 
@@ -66,7 +54,8 @@ The full project report (`Project Report.pdf`) has more detail — requirements,
 
 ## Author
 
-Rishiraj Singh Rajput — B.Tech CSE, VIT Bhopal
+Rishiraj Singh Rajput 
+25BAI11289
 
 ---
 Built for coursework (CSE2006), not production use — feel free to poke around or fork it if it's useful as a reference.
